@@ -1,0 +1,35 @@
+CC = gcc
+STRIP = strip
+EXTRA_CFLAGS =
+
+PYTGT = ../_alf_grammar.linux.so
+
+SOURCES = alf_grammar.c \
+	  wchoice.c \
+	  gen_state.c \
+	  grammar.c \
+	  rnd.c \
+	  symbol.c
+
+HEADERS = alf_grammar.h \
+	  wchoice.h \
+	  gen_state.h \
+	  grammar.h \
+	  rnd.h \
+	  symbol.h
+
+CFLAGS= -g -O3 -Wall -Wextra -Wno-strict-aliasing -Wno-missing-field-initializers -Wshadow -fPIC -fno-builtin $(EXTRA_CFLAGS)
+
+all: $(PYTGT)
+
+clean:
+	rm -f $(PYTGT)
+
+$(PYTGT): $(SOURCES) $(HEADERS) Makefile.linux
+	$(CC) -shared -Wl,-soname,$@ `python3-config --includes` $(CFLAGS) \
+		-o $@ $(SOURCES) \
+		`python3-config --libs`
+	$(STRIP) --strip-unneeded $@
+
+.PHONY: all clean
+

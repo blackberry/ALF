@@ -1,0 +1,37 @@
+Characteristics of a good fuzzing framework (From "Fuzzing Frameworks", Pedram Amini, BH USA 2007)
+    - Abstract and minimize tedious tasks
+        - example given is importing protocol data to format understood by fuzzer
+    - Automatic length calculation (focused on TLV protocol fuzzing)
+    - Generate pseudo-random data
+    - Should include strong list of attack heuristics ("%n%n%n", "../../../", etc.) used before
+      falling back to random generated data
+    - Fault detection, eg. detect unable to accept connections, attach to debugger, etc.
+    - Facilities for parsing wide range of formatted data (mostly for high-level scripted fuzzers)
+    - Fuzzing metric gathering, eg. report to code coverage monitor, etc.
+    - Maximize code reuse
+
+Other frameworks:
+ - antiparser (Python, very limited toolbox)
+ - DFuz (C, restrictive license, high-level script)
+ - SPIKE (C, GPL, block-based heuristic protocol fuzzing)
+ - Peach (Python/C#? - complicated)
+ - General Purpose Fuzzer (C?, generative fuzzer, complicated)
+ - Autodafé (next gen SPIKE, GPL)
+ - Sulley (Python, open, closest to ALF. focused on finite jobs not ongoing, uses agents for fault detection,
+           ports the SPIKE block-based data model for protocols to Python)
+ - Ruxxer (Python, open, obscure (late comer), has API *and* high-level script
+ - BeStorm (commercial generative fuzzer, uses monitor agents for fault detection, unstable)
+
+Assumption of FileFuzzer is that mutations are file based, and target is local (can be run directly under debugger).
+This has caused problems in the past (eg. Twonky). Debugging is tightly coupled with fuzzing.
+
+What we would like:
+- loose coupling between "fuzzing" and "testing"
+- clear expectations for plugin designers, not just give them some hooks and say implement them and ignore the rest,
+  should be intuitive to them what they need to implement, and how their code will be used.
+- we felt that file fuzzing is the general case (all templates/mutations CAN be stored as files) -> fuzz methods will
+  operate solely on files
+- should support different delivery models other than "file as parameter" (eg. TCP/UDP client/server, env variables,
+  cmd line parameters) -- can be implemented as required, but should be generalized to allow for extension now
+- keep the KISS approach
+
