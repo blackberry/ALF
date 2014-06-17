@@ -1,0 +1,208 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ALF Developer API &mdash; ALF 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ALF 2.0 documentation" href="index.html" />
+    <link rel="next" title="alf ALF project module" href="alf.html" />
+    <link rel="prev" title="ALF developer documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.html" title="alf ALF project module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="ALF developer documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="alf-developer-api">
+<h1>ALF Developer API<a class="headerlink" href="#alf-developer-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="api-overview">
+<h2>API Overview<a class="headerlink" href="#api-overview" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an API for software developers, testers, and security
+researchers to implement a plugin for fuzzing with ALF. This API is intended to
+provide a rich set of capabilities for template mutation and fault detection,
+allowing the user to interface their project to the ALF distributed fuzzing
+cloud quickly and easily. The API currently supports Python 2.7.</p>
+<p>To create an ALF plugin, developers should define a class which inherits from
+<a class="reference internal" href="alf.html#alf.Fuzzer" title="alf.Fuzzer"><tt class="xref py py-class docutils literal"><span class="pre">alf.Fuzzer</span></tt></a>, and then register that class using <a class="reference internal" href="alf.html#alf.register" title="alf.register"><tt class="xref py py-func docutils literal"><span class="pre">alf.register()</span></tt></a>.
+The <a class="reference internal" href="alf.html#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a> method of the registered
+<a class="reference internal" href="alf.html#alf.Fuzzer" title="alf.Fuzzer"><tt class="xref py py-class docutils literal"><span class="pre">Fuzzer</span></tt></a> instance will be called every iteration in order to
+mutate the template, deliver the mutation to the target, and detect whether
+faults occur. Each plugin is expected to override
+<a class="reference internal" href="alf.html#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a>. Facilities are provided to assist with template
+mutation in the <a class="reference internal" href="alf.fuzz.html#module-alf.fuzz" title="alf.fuzz: Library of template mutation functions"><tt class="xref py py-mod docutils literal"><span class="pre">alf.fuzz</span></tt></a> submodule. Target launching and fault
+detection functions are provided in the <a class="reference internal" href="alf.debug.html#module-alf.debug" title="alf.debug: Library of target execution and fault monitoring helper functions."><tt class="xref py py-mod docutils literal"><span class="pre">alf.debug</span></tt></a> submodule.</p>
+</div>
+<div class="section" id="packaging">
+<h2>Packaging<a class="headerlink" href="#packaging" title="Permalink to this headline">¶</a></h2>
+<p>ALF plugins are packaged in a Zip file, which must contain a folder with the same name
+as the project. This folder must be an importable Python 2.7 package, and the <em>__init__.py</em>
+of that package must call <a class="reference internal" href="alf.html#alf.register" title="alf.register"><tt class="xref py py-func docutils literal"><span class="pre">alf.register()</span></tt></a> when loaded.</p>
+</div>
+<div class="section" id="aggression">
+<span id="id1"></span><h2>Aggression<a class="headerlink" href="#aggression" title="Permalink to this headline">¶</a></h2>
+<p>It is important to understand ALF&#8217;s concept of <em>aggression</em>.
+It specifies the amount of random change (mutation) applied to a template file.
+Aggression is specified as a positive natural number (an integer greater than zero).</p>
+<p>A &#8220;template&#8221; is a file containing input in some form for a test subject program.
+One &#8220;iteration&#8221; of fuzzing is performed by copying and randomly changing the template,
+producing a &#8220;mutation&#8221; which is then supplied to the test subject program.
+Aggression applies while the copied template is being randomly changed.
+This is typically done by repeated <em>mutation steps</em> applied to the copied template file.
+Each mutation step randomly chooses and changes a few bytes or characters in the file.
+Many mutation steps applied in succession result in the accumulation of many small changes.</p>
+<p>The process is roughly analogous to the effect of mutating radiation on a physical sample.
+Each mutation step is like a &#8220;particle&#8221; that passes through the sample and changes it.
+ALF&#8217;s aggression can be thought of as &#8220;exposure control&#8221;, with the aggression playing the role of
+the distance the sample is from a &#8220;radiation source&#8221;.
+The larger the aggression&#8217;s numeric value, the less mutation will be done on the copied template.
+ALF&#8217;s fuzzing library methods such as <a class="reference internal" href="alf.fuzz.html#alf.fuzz.fuzz_xmlattrs" title="alf.fuzz.fuzz_xmlattrs"><tt class="xref py py-meth docutils literal"><span class="pre">fuzz_xmlattrs()</span></tt></a>
+or <a class="reference internal" href="alf.fuzz.html#alf.fuzz.BinaryFileFuzzer.fuzz_data" title="alf.fuzz.BinaryFileFuzzer.fuzz_data"><tt class="xref py py-meth docutils literal"><span class="pre">fuzz_data()</span></tt></a> accept an aggression parameter
+which has this interpretation.</p>
+<p>It is approximately true that the number of mutation steps (&#8220;particles&#8221;) applied
+varies inverse linearly with the aggression.  For example,
+if a megabyte of binary data is fuzzed using an aggression of 100, there will be approximately
+10,000 mutation steps, each of which has a uniform chance of &#8220;hitting&#8221; one of the bytes.  With an aggression
+of 400, there will be about 2,500 steps.  Mutation steps accumulate, so a byte may be &#8220;hit&#8221; multiple times
+during an aggressive mutation.</p>
+<p>When a fuzzer is running under ALF control,
+for each &#8220;fuzz run&#8221; the framework randomly chooses an aggression from a project-specific range,
+and supplies it to the <a class="reference internal" href="alf.html#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a> plug-in implementation.
+If fuzz library methods are used, the plug-in should pass aggression on to the library.
+If fuzz library methods are not used and mutation is done some other way,
+aggression should be treated similarly:
+aggression 1 should produce the wildest mutations,
+and numerically larger values of aggression should produce less &#8220;wild&#8221; mutations.</p>
+<p>Aggression 0 is a special case.  When aggression is zero, no mutation should be performed: the copied template
+file should be used unchanged.  It is as if the sample was an infinite distance from the radiation.
+Plug-ins must ensure that they observe this &#8220;zero aggression&#8221; rule,
+so that ALF can effectively reproduce previously recorded failures.
+The ALF fuzzing library methods observe this &#8220;zero aggression&#8221; rule.</p>
+</div>
+<div class="section" id="running-locally">
+<h2>Running Locally<a class="headerlink" href="#running-locally" title="Permalink to this headline">¶</a></h2>
+<p>An ALF plugin can be run locally for testing or offline fuzzing as follows:</p>
+<div class="highlight-python"><pre>python -m alf &lt;ProjectName&gt; &lt;template&gt;</pre>
+</div>
+<p>The <em>ProjectName</em> and <em>template</em> parameters are required. Additional options are available.
+Particularly useful for reproducings failures is:</p>
+<div class="highlight-python"><pre>python -m alf &lt;ProjectName&gt; &lt;mutation&gt; -g 0 -i 1</pre>
+</div>
+<p>which locally runs a previously-mutated file for one iteration under the &#8220;zero aggression&#8221; rule.</p>
+<p>Up-to-date help can be viewed by running:</p>
+<div class="highlight-python"><pre>python -m alf -h</pre>
+</div>
+</div>
+<div class="section" id="templates">
+<h2>Templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h2>
+<p>Templates are used by projects to generate mutations. Each job requires a template
+(even if it is unused by the project) and only one template can be used per job.
+The distribution of the templates is handled by the ALF Server.
+When running in local mode only the template specified on the command line will be used.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ALF Developer API</a><ul>
+<li><a class="reference internal" href="#api-overview">API Overview</a></li>
+<li><a class="reference internal" href="#packaging">Packaging</a></li>
+<li><a class="reference internal" href="#aggression">Aggression</a></li>
+<li><a class="reference internal" href="#running-locally">Running Locally</a></li>
+<li><a class="reference internal" href="#templates">Templates</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">ALF developer documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="alf.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">alf</span></tt> ALF project module</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.html" title="alf ALF project module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="ALF developer documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Research In Motion, Ltd..
+    </div>
+  </body>
+</html>

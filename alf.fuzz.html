@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>alf.fuzz ALF Fuzzing Library &mdash; ALF 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ALF 2.0 documentation" href="index.html" />
+    <link rel="prev" title="alf.debug ALF Debugging Library" href="alf.debug.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.debug.html" title="alf.debug ALF Debugging Library"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-alf.fuzz">
+<span id="alf-fuzz-alf-fuzzing-library"></span><h1><a class="reference internal" href="#module-alf.fuzz" title="alf.fuzz: Library of template mutation functions"><tt class="xref py py-mod docutils literal"><span class="pre">alf.fuzz</span></tt></a> ALF Fuzzing Library<a class="headerlink" href="#module-alf.fuzz" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a set of mutation functions useful for fuzzer development.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="alf.fuzz.auto_fixer">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">auto_fixer</tt><big>(</big><em>data</em>, <em>ext</em><big>)</big><a class="headerlink" href="#alf.fuzz.auto_fixer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to automatically fix fuzzed data based on the file extension.
+If <em>ext</em> represents a known extension, it will be passed to the appropriate
+function to fix it&#8217;s signature and/or checksums. If <em>ext</em> is not know, data
+is returned unmodified.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.find_xmlattrs">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">find_xmlattrs</tt><big>(</big><em>files</em><big>)</big><a class="headerlink" href="#alf.fuzz.find_xmlattrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function scans a set of XML documents and identifies all of
+the element attributes for later fuzzing. The XML documents are
+given in a list of dicts, each having a <tt class="docutils literal"><span class="pre">data</span></tt> field and any
+number of other user defined fields to identify the file.</p>
+<p>The result is a list of opaque objects identifying the fuzzable
+attributes, which should be used as input to <a class="reference internal" href="#alf.fuzz.fuzz_xmlattrs" title="alf.fuzz.fuzz_xmlattrs"><tt class="xref py py-func docutils literal"><span class="pre">fuzz_xmlattrs()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.fix_png">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">fix_png</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#alf.fuzz.fix_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the signature and checksums on a fuzzed PNG image.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.fuzz_xmlattrs">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">fuzz_xmlattrs</tt><big>(</big><em>files</em>, <em>attributes</em>, <em>aggression</em>, <em>strfuzzer=None</em>, <em>intfuzzer=None</em><big>)</big><a class="headerlink" href="#alf.fuzz.fuzz_xmlattrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method fuzzes the set of attributes found by
+<a class="reference internal" href="#alf.fuzz.find_xmlattrs" title="alf.fuzz.find_xmlattrs"><tt class="xref py py-func docutils literal"><span class="pre">find_xmlattrs()</span></tt></a>.  The <em>files</em> parameter should be the same
+one given in <a class="reference internal" href="#alf.fuzz.find_xmlattrs" title="alf.fuzz.find_xmlattrs"><tt class="xref py py-func docutils literal"><span class="pre">find_xmlattrs()</span></tt></a>, and the <em>attributes</em> parameter
+should be the list returned by the same.</p>
+<p><em>aggression</em> is the inverse of the number of attributes to mutate
+as a ratio of the total number of attributes found. (ie.
+num_attrs/aggression == number of attrs to mutate).  Note that in
+this mode, aggression is statistical, so even an <em>aggression</em> of 1
+will not hit every attribute in the input.</p>
+<p><em>strfuzzer</em> and <em>intfuzzer</em> are optional instances of
+<a class="reference internal" href="#alf.fuzz.StringFuzzer" title="alf.fuzz.StringFuzzer"><tt class="xref py py-class docutils literal"><span class="pre">StringFuzzer</span></tt></a> and <a class="reference internal" href="#alf.fuzz.IntegerFuzzer" title="alf.fuzz.IntegerFuzzer"><tt class="xref py py-class docutils literal"><span class="pre">IntegerFuzzer</span></tt></a> to be used on
+their respective types.  If not specified, one of each will be
+instantiated using the default parameters for each.</p>
+<p>The result is a mutated copy of <em>files</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.random_binfuzz_type">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">random_binfuzz_type</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.fuzz.random_binfuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a randomly chosen fuzz_type from <tt class="docutils literal"><span class="pre">BINFUZZ_*</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.random_intfuzz_type">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">random_intfuzz_type</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.fuzz.random_intfuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a randomly chosen fuzz_type from <tt class="docutils literal"><span class="pre">INTFUZZ_*</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.fuzz.random_strfuzz_type">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">random_strfuzz_type</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.fuzz.random_strfuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a randomly chosen fuzz_type from <tt class="docutils literal"><span class="pre">STRFUZZ_*</span></tt>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alf.fuzz.BinaryFileFuzzer">
+<em class="property">class </em><tt class="descclassname">alf.fuzz.</tt><tt class="descname">BinaryFileFuzzer</tt><big>(</big><em>fuzz_type=None</em>, <em>special=None</em>, <em>max_corrupt=10240</em><big>)</big><a class="headerlink" href="#alf.fuzz.BinaryFileFuzzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is designed to mutate a string of binary data. <em>fuzz_type</em> can be one
+of the <tt class="docutils literal"><span class="pre">BINFUZZ_*</span></tt> constants, or <tt class="docutils literal"><span class="pre">None</span></tt> to select at random for each mutation.
+<em>special</em> will override the default value of &#8216;A&#8217; used when <tt class="xref py py-data docutils literal"><span class="pre">BINFUZZ_SPECIAL</span></tt> is
+selected. When <em>fuzz_type</em> is None, specific fuzz types can be disabled using
+<a class="reference internal" href="#alf.fuzz.BinaryFileFuzzer.disable_fuzz_type" title="alf.fuzz.BinaryFileFuzzer.disable_fuzz_type"><tt class="xref py py-meth docutils literal"><span class="pre">disable_fuzz_type()</span></tt></a>. <em>max_corrupt</em> is used to set the maximum amount of data to
+add/corrupt in a single pass.</p>
+<dl class="method">
+<dt id="alf.fuzz.BinaryFileFuzzer.disable_fuzz_type">
+<tt class="descname">disable_fuzz_type</tt><big>(</big><em>fuzz_type</em><big>)</big><a class="headerlink" href="#alf.fuzz.BinaryFileFuzzer.disable_fuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method disables the given <em>fuzz_type</em> for all future mutations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.BinaryFileFuzzer.fuzz_data">
+<tt class="descname">fuzz_data</tt><big>(</big><em>file_data</em>, <em>aggression</em>, <em>fuzz_type=None</em>, <em>fix_ext=None</em><big>)</big><a class="headerlink" href="#alf.fuzz.BinaryFileFuzzer.fuzz_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method mutates the given input data using the <em>aggression</em> to determine
+how much of the data to mutate.</p>
+<p>Two modes of aggression are supported. If <em>aggression</em> is greater than 0, that
+number is the inverse of the number of bytes to mutate as a ratio of the input length
+(ie. filesize/aggression == number of bytes to mutate). Note that in this mode, aggression
+is statistical, so even an <em>aggression</em> of 1 will not hit every byte in the input. The other
+mode of aggression is when <em>aggression</em> is less than 0. In this case, the magnitude is
+used as the absolute number of bytes to mutate (ie. -1 == 1 mutation, -2 == 2 mutations, etc.).</p>
+<p><em>fuzz_type</em> specifies how bytes will be mutated. A value of None indicates that a random fuzz_type should
+be used for each byte mutated.</p>
+<p><em>fix_ext</em> is the optional extension of the original file, in which case the data will be filtered
+through <tt class="xref py py-func docutils literal"><span class="pre">auto_fix()</span></tt> after mutation.</p>
+<p><a class="reference internal" href="#alf.fuzz.BinaryFileFuzzer.fuzz_data" title="alf.fuzz.BinaryFileFuzzer.fuzz_data"><tt class="xref py py-meth docutils literal"><span class="pre">fuzz_data()</span></tt></a> returns a tuple containing the number of bytes mutated, and the string of mutated binary data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.BinaryFileFuzzer.set_special_value">
+<tt class="descname">set_special_value</tt><big>(</big><em>special</em><big>)</big><a class="headerlink" href="#alf.fuzz.BinaryFileFuzzer.set_special_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will set a new special value to be used by <tt class="xref py py-data docutils literal"><span class="pre">BINFUZZ_SPECIAL</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.fuzz.FuzzableInteger">
+<em class="property">class </em><tt class="descclassname">alf.fuzz.</tt><tt class="descname">FuzzableInteger</tt><big>(</big><em>value_as_string</em>, <em>is_hex=False</em>, <em>maintain_width=False</em><big>)</big><a class="headerlink" href="#alf.fuzz.FuzzableInteger" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a fuzzable integer value, with some extra
+formatting information preserved. The input value is given as a string.
+If the string begins with <tt class="docutils literal"><span class="pre">0x</span></tt>, the value is assumed to be hexadecimal
+with a prefix, and will be output as such unless changed by IntegerFuzzer.
+If <em>is_hex</em> is True, the value is also treated as hexadecimal, but will
+not be output with the <tt class="docutils literal"><span class="pre">0x</span></tt> prefix. If <em>maintain_width</em> is set, the printed
+width of the integer will be maintained on output.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.fuzz.IntegerFuzzer">
+<em class="property">class </em><tt class="descclassname">alf.fuzz.</tt><tt class="descname">IntegerFuzzer</tt><big>(</big><em>fuzz_type=None</em>, <em>special=None</em><big>)</big><a class="headerlink" href="#alf.fuzz.IntegerFuzzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is designed to mutate an integer. <em>fuzz_type</em> can be one
+of the <tt class="docutils literal"><span class="pre">INTFUZZ_*</span></tt> constants, or <tt class="docutils literal"><span class="pre">None</span></tt> to select at random for each mutation.
+<em>special</em> will override the default value of 0x12345678 used when <tt class="xref py py-data docutils literal"><span class="pre">INTFUZZ_SPECIAL</span></tt> is
+selected. When <em>fuzz_type</em> is None, specific fuzz types can be disabled using
+<a class="reference internal" href="#alf.fuzz.IntegerFuzzer.disable_fuzz_type" title="alf.fuzz.IntegerFuzzer.disable_fuzz_type"><tt class="xref py py-meth docutils literal"><span class="pre">disable_fuzz_type()</span></tt></a>.</p>
+<dl class="method">
+<dt id="alf.fuzz.IntegerFuzzer.disable_fuzz_type">
+<tt class="descname">disable_fuzz_type</tt><big>(</big><em>fuzz_type</em><big>)</big><a class="headerlink" href="#alf.fuzz.IntegerFuzzer.disable_fuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method disables the given <em>fuzz_type</em> for all future mutations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.IntegerFuzzer.fuzz_value">
+<tt class="descname">fuzz_value</tt><big>(</big><em>fuzzable_integer</em>, <em>fuzz_type=None</em><big>)</big><a class="headerlink" href="#alf.fuzz.IntegerFuzzer.fuzz_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method mutates a given integer value, wrapped in a <a class="reference internal" href="#alf.fuzz.FuzzableInteger" title="alf.fuzz.FuzzableInteger"><tt class="xref py py-class docutils literal"><span class="pre">FuzzableInteger</span></tt></a>
+instance. The input value may not affect the mutation, depending on the fuzz
+type selected. <em>fuzz_type</em> specifies how the integer will
+be mutated. A value of None indicates that a random fuzz_type should be used
+for each mutation of the integer.</p>
+<p>The result is a stringified mutation which may or may not be based on the original
+integer value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.IntegerFuzzer.random_fuzz_type">
+<tt class="descname">random_fuzz_type</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.fuzz.IntegerFuzzer.random_fuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a randomly chosen fuzz type from <tt class="docutils literal"><span class="pre">INTFUZZ_*</span></tt>.
+Any fuzz types disabled by <a class="reference internal" href="#alf.fuzz.IntegerFuzzer.disable_fuzz_type" title="alf.fuzz.IntegerFuzzer.disable_fuzz_type"><tt class="xref py py-meth docutils literal"><span class="pre">disable_fuzz_type()</span></tt></a> will be excluded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.IntegerFuzzer.set_special_value">
+<tt class="descname">set_special_value</tt><big>(</big><em>special</em><big>)</big><a class="headerlink" href="#alf.fuzz.IntegerFuzzer.set_special_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will set a new special value to be used by <tt class="xref py py-data docutils literal"><span class="pre">INTFUZZ_SPECIAL</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.fuzz.StringFuzzer">
+<em class="property">class </em><tt class="descclassname">alf.fuzz.</tt><tt class="descname">StringFuzzer</tt><big>(</big><em>fuzz_type=None</em>, <em>special=None</em>, <em>max_length=10240</em><big>)</big><a class="headerlink" href="#alf.fuzz.StringFuzzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is designed to mutate a string. <em>fuzz_type</em> can be one
+of the <tt class="docutils literal"><span class="pre">STRFUZZ_*</span></tt> constants, or <tt class="docutils literal"><span class="pre">None</span></tt> to select at random for each mutation.
+<em>special</em> will override the default value of <tt class="docutils literal"><span class="pre">'A'*1024</span></tt> used when <tt class="xref py py-data docutils literal"><span class="pre">STRFUZZ_SPECIAL</span></tt> is
+selected. When <em>fuzz_type</em> is None, specific fuzz types can be disabled using
+<a class="reference internal" href="#alf.fuzz.StringFuzzer.disable_fuzz_type" title="alf.fuzz.StringFuzzer.disable_fuzz_type"><tt class="xref py py-meth docutils literal"><span class="pre">disable_fuzz_type()</span></tt></a>. <em>max_length</em> will limit the size of the string returned.
+The default for max_length is 10KB.</p>
+<dl class="method">
+<dt id="alf.fuzz.StringFuzzer.disable_fuzz_type">
+<tt class="descname">disable_fuzz_type</tt><big>(</big><em>fuzz_type</em><big>)</big><a class="headerlink" href="#alf.fuzz.StringFuzzer.disable_fuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method disables the given <em>fuzz_type</em> for all future mutations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.StringFuzzer.fuzz_value">
+<tt class="descname">fuzz_value</tt><big>(</big><em>value</em>, <em>fuzz_type=None</em><big>)</big><a class="headerlink" href="#alf.fuzz.StringFuzzer.fuzz_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method mutates a given string value. The input string is <em>value</em>, which
+may or may not affect the mutation. <em>fuzz_type</em> specifies how the string will
+be mutated. A value of None indicates that a random fuzz_type should be used
+for each mutation of the string.</p>
+<p>The result is a mutation which may or may not be based on the original string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.StringFuzzer.random_fuzz_type">
+<tt class="descname">random_fuzz_type</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.fuzz.StringFuzzer.random_fuzz_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a randomly chosen fuzz type from <tt class="docutils literal"><span class="pre">STRFUZZ_*</span></tt>.
+Any fuzz types disabled by <a class="reference internal" href="#alf.fuzz.StringFuzzer.disable_fuzz_type" title="alf.fuzz.StringFuzzer.disable_fuzz_type"><tt class="xref py py-meth docutils literal"><span class="pre">disable_fuzz_type()</span></tt></a> will be excluded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.fuzz.StringFuzzer.set_special_value">
+<tt class="descname">set_special_value</tt><big>(</big><em>special</em><big>)</big><a class="headerlink" href="#alf.fuzz.StringFuzzer.set_special_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will set a new special value to be used by <tt class="xref py py-data docutils literal"><span class="pre">STRFUZZ_SPECIAL</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.fuzz.Grammar">
+<em class="property">class </em><tt class="descclassname">alf.fuzz.</tt><tt class="descname">Grammar</tt><big>(</big><em>grammar=''</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#alf.fuzz.Grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a language conforming to a given grammar specification.</p>
+<p>A Grammar consists of a set of symbol definitions which are used to define the structure of a language. The Grammar
+object is created from a text input with the format described below, and then used to generate randomly constructed
+instances of the described language. The entrypoint of the grammar is the named symbol &#8216;root&#8217;. Comments are allowed
+anywhere in the file, preceded by a hash character (<tt class="docutils literal"><span class="pre">#</span></tt>).</p>
+<p>Symbols can either be named or implicit. A named symbol consists of a symbol name at the beginning of a line,
+followed by at least one whitespace character, followed by the symbol definition.</p>
+<blockquote>
+<div><div class="highlight-python"><pre>SymbolName  Definition</pre>
+</div>
+</div></blockquote>
+<p>Implicit symbols are defined without being assigned an explicit name. For example a regular expression can be used
+in a concatenation definition directly, without being assigned a name. Choice and repeat symbols cannot be defined
+implicitly.</p>
+<p><strong>Concatenation</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      SubSymbol1 [SubSymbol2] ...</pre>
+</div>
+</div></blockquote>
+<p>A concatenation consists of one or more symbols which will be generated in succession. The sub-symbol can be
+any named symbol, reference, or an implicit declaration of allowed symbol types. A concatenation can also be
+implicitly defined as the sub-symbol of a choice or repeat symbol.</p>
+</div></blockquote>
+<p><strong>Choice</strong>: (must be named, not implicit)</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      Weight1     SubSymbol1
+               [Weight2     SubSymbol2]
+               [Weight3     SubSymbol3]</pre>
+</div>
+</div></blockquote>
+<p>A choice consists of one or more weighted sub-symbols. At generation, only one of the sub-symbols will be
+generated at random, with each sub-symbol being generated with probability of weight/sum(weights) (the sum of
+all weights in this choice). Weight can be a non-negative number.</p>
+</div></blockquote>
+<p><strong>Repeat</strong>: (must be named, not implicit)</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      {Min,Max}   SubSymbol</pre>
+</div>
+</div></blockquote>
+<p>Defines a repetition of a sub-symbol. The number of repetitions is at most <tt class="docutils literal"><span class="pre">Max</span></tt>, and at minimum <tt class="docutils literal"><span class="pre">Min</span></tt>.</p>
+</div></blockquote>
+<p><strong>Text</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      'some text'
+SymbolName      "some text"</pre>
+</div>
+</div></blockquote>
+<dl class="docutils">
+<dt>A text symbol is a string generated verbatim in the output. A few escape codes are recognized:</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">\t</span></tt>  horizontal tab (ASCII 0x09)</li>
+<li><tt class="docutils literal"><span class="pre">\n</span></tt>   line feed (ASCII 0x0A)</li>
+<li><tt class="docutils literal"><span class="pre">\v</span></tt>  vertical tab (ASCII 0x0B)</li>
+<li><tt class="docutils literal"><span class="pre">\r</span></tt>  carriage return (ASCII 0x0D)</li>
+</ul>
+</dd>
+</dl>
+<p>Any other character preceded by backslash will appear in the output without the backslash (including backslash,
+single quote, and double quote).</p>
+</div></blockquote>
+<p><strong>Regular expression</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      /[a-zA][0-9]*.+[^0-9]{2}.[^abc]{1,3}/</pre>
+</div>
+</div></blockquote>
+<p>A regular expression (regex) symbol is a minimal regular expression implementation used for generating text
+patterns (rather than the traditional use for matching text patterns). A regex symbol consists of one or more
+parts in succession, and each part consists of a character set definition optionally followed by a repetition
+specification. The character set definition can be a period <tt class="docutils literal"><span class="pre">.</span></tt> to denote any character, a set of characters in
+brackets eg. <tt class="docutils literal"><span class="pre">[0-9a-f]</span></tt>, or an inverted set of characters <tt class="docutils literal"><span class="pre">[^a-z]</span></tt> (any character except a-z). As shown, ranges can
+be used by using a dash. The dash character can be matched in a set by putting it last in the brackets. The
+optional repetition specification can be a range of integers in curly braces, eg. <tt class="docutils literal"><span class="pre">{1,10}</span></tt> will generate between
+1 and 10 repetitions (at random), a single integer in curly braces, eg. <tt class="docutils literal"><span class="pre">{10}</span></tt> will generate exactly 10
+repetitions, an asterisk character (<tt class="docutils literal"><span class="pre">*</span></tt>) which is equivalent to <tt class="docutils literal"><span class="pre">{0,5}</span></tt>, or a plus character (<tt class="docutils literal"><span class="pre">+</span></tt>) which is
+equivalent to <tt class="docutils literal"><span class="pre">{1,5}</span></tt>.</p>
+</div></blockquote>
+<p><strong>Random floating point decimal</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      rndflt(a,b)</pre>
+</div>
+</div></blockquote>
+<p>A random floating-point decimal number between <tt class="docutils literal"><span class="pre">a</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt> inclusive.</p>
+</div></blockquote>
+<p><strong>Random integer</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      rndint(a,b)</pre>
+</div>
+</div></blockquote>
+<p>A random integer between <tt class="docutils literal"><span class="pre">a</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt> inclusive.</p>
+</div></blockquote>
+<p><strong>Reference</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolRef       @SymbolName</pre>
+</div>
+</div></blockquote>
+<p>Symbol references allow a generated symbol to be used elsewhere in the grammar. Referencing a symbol by
+<tt class="docutils literal"><span class="pre">&#64;Symbol</span></tt> will output a generated value of <tt class="docutils literal"><span class="pre">Symbol</span></tt> from elsewhere in the output.</p>
+</div></blockquote>
+<p><strong>Filter function</strong>:</p>
+<blockquote>
+<div><blockquote>
+<div><div class="highlight-python"><pre>SymbolName      function(SymbolArg1[,...])</pre>
+</div>
+</div></blockquote>
+<p>This denotes an externally defined filter function. Note that the function name can be any valid Python
+identifier. The function can take an arbitrary number of arguments, but must return a single string which is
+the generated value for this symbol instance. Functions are passed as keyword arguments into the Grammar object
+constructor.</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_ALTERNATE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_ALTERNATE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_ALTERNATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>randomly selected value from set:
+0xAA, 0x55, 0x0A, 0x05, 0xA0, 0x50, 0x0F, 0xF0</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_BOUNDARY">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_BOUNDARY</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd><p>byte = (2^x + y) &amp; 0xFF</p>
+<p>x is a randomly selected whole number beginning at 0 up to and including 7
+y is randomly selcted from set: -2, -1, 0</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_CHOP">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_CHOP</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_CHOP" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove a chunk of data (ie. [1,2,3,4,5] -&gt; [1,4,5])
+the max chunk size is 64 bytes</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_CORRUPT">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_CORRUPT</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_CORRUPT" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert a chunk of bytes with random values</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_CORRUPT_INPLACE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_CORRUPT_INPLACE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_CORRUPT_INPLACE" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace a chunk of bytes with random values</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_DEC">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_DEC</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_DEC" title="Permalink to this definition">¶</a></dt>
+<dd><p>decrement byte</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_DUP">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_DUP</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_DUP" title="Permalink to this definition">¶</a></dt>
+<dd><p>duplicate a chunk of bytes (ie. [1,2,3,4,5] -&gt; [1,2,3,2,3,4,5])</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_INC">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_INC</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_INC" title="Permalink to this definition">¶</a></dt>
+<dd><p>increment byte</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_MAX">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_MAX</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_MAX" title="Permalink to this definition">¶</a></dt>
+<dd><p>255</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_NEGATE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_NEGATE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_NEGATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>flip all bits in the byte</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_ONE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_ONE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_ONE" title="Permalink to this definition">¶</a></dt>
+<dd><p>1</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_RANDOM">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_RANDOM</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_RANDOM" title="Permalink to this definition">¶</a></dt>
+<dd><p>random value</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_SPECIAL">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_SPECIAL</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_SPECIAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>special value, user defined</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_SWAP">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_SWAP</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_SWAP" title="Permalink to this definition">¶</a></dt>
+<dd><p>swap two chunks</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_XOR">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_XOR</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_XOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>byte XOR with a randomly selected pattern</p>
+<p>the patterns set includes:
+0x11, 0x22, 0x33, 0x44, 0x55, 0x88, 0x99, 0xAA, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xFF</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_ZERO">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_ZERO</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_ZERO" title="Permalink to this definition">¶</a></dt>
+<dd><p>0</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.BINFUZZ_N">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">BINFUZZ_N</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.BINFUZZ_N" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of <tt class="docutils literal"><span class="pre">INTFUZZ_*</span></tt> constants defined.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.SPECIAL_BINFUZZ_VALUE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">SPECIAL_BINFUZZ_VALUE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.SPECIAL_BINFUZZ_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default special value selected by <tt class="xref py py-data docutils literal"><span class="pre">BINFUZZ_SPECIAL</span></tt>. ascii char <tt class="docutils literal"><span class="pre">'A'</span></tt></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_ALTERNATE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_ALTERNATE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_ALTERNATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>value is randomly selected from set:
+0xAAAAAAAA, 0x55555555, 0xAAAA0000, 0x55550000,
+0x0000AAAA, 0x00005555, 0xFFFF0000, 0xFF00FF00,
+0x00FF00FF, 0x00FFFF00, 0xF0F0F0F0, 0x0F0F0F0F,
+0xFF0000FF, 0xF000000F</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_BOUNDARY">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_BOUNDARY</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd><p>2^x + y</p>
+<p>x is a randomly selected whole number beginning at 0 up to and including 31
+y is randomly selected from set: -2, -1, 0</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_DEC">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_DEC</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_DEC" title="Permalink to this definition">¶</a></dt>
+<dd><p>decrement</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_FLOAT">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_FLOAT</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_FLOAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>float</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_INC">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_INC</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_INC" title="Permalink to this definition">¶</a></dt>
+<dd><p>increment</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_MAX">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_MAX</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_MAX" title="Permalink to this definition">¶</a></dt>
+<dd><p>max int</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_MIN">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_MIN</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_MIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>min int</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_ONE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_ONE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_ONE" title="Permalink to this definition">¶</a></dt>
+<dd><p>1</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_RANDOM">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_RANDOM</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_RANDOM" title="Permalink to this definition">¶</a></dt>
+<dd><p>random value</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_SPECIAL">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_SPECIAL</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_SPECIAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>special value, user defined</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_STRING">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_STRING</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_STRING" title="Permalink to this definition">¶</a></dt>
+<dd><p>stringify, and mutate using <a class="reference internal" href="#alf.fuzz.StringFuzzer" title="alf.fuzz.StringFuzzer"><tt class="xref py py-class docutils literal"><span class="pre">StringFuzzer</span></tt></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_ZERO">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_ZERO</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_ZERO" title="Permalink to this definition">¶</a></dt>
+<dd><p>0</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.INTFUZZ_N">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">INTFUZZ_N</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.INTFUZZ_N" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of <tt class="docutils literal"><span class="pre">INTFUZZ_*</span></tt> constants defined.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.SPECIAL_INTFUZZ_VALUE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">SPECIAL_INTFUZZ_VALUE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.SPECIAL_INTFUZZ_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default special value selected by <tt class="xref py py-data docutils literal"><span class="pre">INTFUZZ_SPECIAL</span></tt>. 0x12345678</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_CORRUPT">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_CORRUPT</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_CORRUPT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutate string with random bytes (0-255), maintaining length.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_DELIMITERS">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_DELIMITERS</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_DELIMITERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace a chunk of bytes with a random delimiter.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_EMPTY">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_EMPTY</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_EMPTY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an empty string.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_FORMAT_CHAR">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_FORMAT_CHAR</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_FORMAT_CHAR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">%n</span></tt> repeated between 1 and 32 times.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_GROW">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_GROW</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_GROW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add two spaces to the end of the string.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_INT">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_INT</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_INT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the string with the string representation of a random decimal integer.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_NULL">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_NULL</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_NULL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite a random position in the string with a nul character (<tt class="docutils literal"><span class="pre">\0</span></tt>).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_PREV_DIRS">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_PREV_DIRS</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_PREV_DIRS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">../</span></tt> repeated between 1 and 32 times.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_RANDLEN">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_RANDLEN</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_RANDLEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append &#8216;a&#8217; to the string, up to a random length.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_SHRINK">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_SHRINK</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_SHRINK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cut the last byte off the string.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_SPECIAL">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_SPECIAL</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_SPECIAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the string with the special value defined when <a class="reference internal" href="#alf.fuzz.StringFuzzer" title="alf.fuzz.StringFuzzer"><tt class="xref py py-class docutils literal"><span class="pre">StringFuzzer</span></tt></a> was instantiated.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_XSS">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_XSS</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_XSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return one of several XSS strings.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_N">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_N</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_N" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of <tt class="docutils literal"><span class="pre">STRFUZZ_*</span></tt> constants defined.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.SPECIAL_STRFUZZ_VALUE">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">SPECIAL_STRFUZZ_VALUE</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.SPECIAL_STRFUZZ_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default special value selected by <tt class="xref py py-data docutils literal"><span class="pre">STRFUZZ_SPECIAL</span></tt>. ascii char <tt class="docutils literal"><span class="pre">'A'*1024</span></tt></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.fuzz.alf.fuzz.STRFUZZ_XSS_VALUES">
+<tt class="descclassname">alf.fuzz.</tt><tt class="descname">STRFUZZ_XSS_VALUES</tt><a class="headerlink" href="#alf.fuzz.alf.fuzz.STRFUZZ_XSS_VALUES" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of XSS strings selected from by <tt class="xref py py-data docutils literal"><span class="pre">STRFUZZ_XSS</span></tt>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">alf.fuzz</span></tt> ALF Fuzzing Library</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="alf.debug.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">alf.debug</span></tt> ALF Debugging Library</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.debug.html" title="alf.debug ALF Debugging Library"
+             >previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Research In Motion, Ltd..
+    </div>
+  </body>
+</html>

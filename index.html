@@ -1,0 +1,154 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ALF developer documentation &mdash; ALF 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ALF 2.0 documentation" href="#" />
+    <link rel="next" title="ALF Developer API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="ALF Developer API"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="alf-developer-documentation">
+<h1>ALF developer documentation<a class="headerlink" href="#alf-developer-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="topic">
+<p class="topic-title first">Abstract</p>
+<p>This module provides an API for software developers, testers, and security
+researchers to implement a plugin for fuzzing with ALF. This API is intended to
+provide a rich set of capabilities for template mutation and fault detection,
+allowing the user to interface their project to the ALF distributed fuzzing
+cloud quickly and easily.</p>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">ALF Developer API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#api-overview">API Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#packaging">Packaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#aggression">Aggression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#running-locally">Running Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#templates">Templates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alf.html"><tt class="docutils literal"><span class="pre">alf</span></tt> ALF project module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alf.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alf.debug.html"><tt class="docutils literal"><span class="pre">alf.debug</span></tt> ALF Debugging Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alf.debug.html#callbacks">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.debug.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.debug.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.debug.html#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.debug.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alf.fuzz.html"><tt class="docutils literal"><span class="pre">alf.fuzz</span></tt> ALF Fuzzing Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alf.fuzz.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.fuzz.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alf.fuzz.html#constants">Constants</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ALF developer documentation</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">ALF Developer API</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="ALF Developer API"
+             >next</a> |</li>
+        <li><a href="#">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Research In Motion, Ltd..
+    </div>
+  </body>
+</html>
