@@ -1,0 +1,38 @@
+CC = ntoarmv7-gcc
+STRIP = ntoarmv7-strip
+PYROOT = $(QNX_TARGET)/armle-v7
+EXTRA_CFLAGS = -I$(QNX_TARGET)/usr/include/python3.2m
+
+PYTGT = ../_alf_grammar.ntoarm.so
+
+SOURCES = alf_grammar.c \
+	  wchoice.c \
+	  gen_state.c \
+	  grammar.c \
+	  rnd.c \
+	  symbol.c
+
+HEADERS = alf_grammar.h \
+	  wchoice.h \
+	  gen_state.h \
+	  grammar.h \
+	  rnd.h \
+	  symbol.h
+
+CFLAGS= -g -O3 -Wall -Wshadow -fPIC -fno-builtin \
+	  $(EXTRA_CFLAGS)
+
+all: $(PYTGT)
+
+clean:
+	rm -f $(PYTGT)
+
+$(PYTGT): Makefile.ntoarm $(SOURCES) $(HEADERS)
+	$(CC) -shared -Wl,-soname,$@ -Wl,-z,notext $(CFLAGS) \
+		-o $@ $(SOURCES) \
+		-L$(PYROOT)/usr/lib \
+		-lpython3.2m
+	$(STRIP) --strip-unneeded $@
+
+.PHONY: all clean
+

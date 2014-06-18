@@ -1,0 +1,23 @@
+total 19252
+-rwxrwxr-x 1 jesse jesse   88008 Feb  7  2013 cdb.exe
+-rw-rw-r-- 1 jesse jesse 2636232 Feb  7  2013 dbgeng.dll
+-rw-rw-r-- 1 jesse jesse 1138120 Feb  7  2013 dbghelp.dll
+-rw-rw-r-- 1 jesse jesse 2755528 Feb  7  2013 ext.dll
+-rw-rw-r-- 1 jesse jesse  513976 Feb  7  2013 exts.dll
+-rw-rw-r-- 1 jesse jesse       0 May 23 15:39 files.txt
+drwx-w---- 3 jesse jesse      19 May 23 15:36 gdb-data
+-rwxrwxr-x 1 jesse jesse 3418112 Aug  1  2013 gdb.exe
+-rwxrwxr-x 1 jesse jesse 2992128 Aug  1  2013 gdb-ntoarm.exe
+-rwxrwxr-x 1 jesse jesse  126920 Feb  7  2013 gflags.exe
+-rwxrwxr-x 1 jesse jesse   49535 Nov 29  2012 kdserver.exe
+-rw-rw-r-- 1 jesse jesse  443104 Jun 26  2013 msec.dll
+-rwxrwxr-x 1 jesse jesse 3653576 Aug  1  2013 ntox86-gdb
+-rw-rw-r-- 1 jesse jesse   14624 Nov 29  2012 ntox86-shutdown
+-rw-rw-r-- 1 jesse jesse   81864 Feb  7  2013 ntsdexts.dll
+-rw-rw-r-- 1 jesse jesse 1523712 Nov 29  2012 pykd.pyd
+drwx-w---- 2 jesse jesse      54 May 23 15:36 scripts
+-rw-rw-r-- 1 jesse jesse  114120 Feb  7  2013 symsrv.dll
+-rw-rw-r-- 1 jesse jesse       1 Nov 29  2012 symsrv.yes
+-rw-rw-r-- 1 jesse jesse   90056 Feb  7  2013 uext.dll
+-rw-rw-r-- 1 jesse jesse     448 Nov 29  2012 win_error_report.reg
+-rw-rw-r-- 1 jesse jesse   41928 Feb  7  2013 wow64exts.dll
