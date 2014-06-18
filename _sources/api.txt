@@ -9,7 +9,7 @@ This module provides an API for software developers, testers, and security
 researchers to implement a plugin for fuzzing with ALF. This API is intended to
 provide a rich set of capabilities for template mutation and fault detection,
 allowing the user to interface their project to the ALF distributed fuzzing
-cloud quickly and easily. The API currently supports Python 2.7.
+cloud quickly and easily. The API currently supports Python 3.2.
 
 To create an ALF plugin, developers should define a class which inherits from
 :class:`alf.Fuzzer`, and then register that class using :func:`alf.register`.
@@ -25,7 +25,7 @@ Packaging
 =========
 
 ALF plugins are packaged in a Zip file, which must contain a folder with the same name
-as the project. This folder must be an importable Python 2.7 package, and the *__init__.py*
+as the project. This folder must be an importable Python 3 package, and the *__init__.py*
 of that package must call :func:`alf.register` when loaded.
 
 .. _aggression:

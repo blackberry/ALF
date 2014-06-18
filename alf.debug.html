@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -283,17 +281,17 @@ depend only on extraneous resources which are or can be made available for autom
 <p>The example programs <tt class="docutils literal"><span class="pre">my_something</span></tt> below are purely imaginary.  Resemblance to real
 programs living or dead is a coincidence.</p>
 <p>Example 1 : use <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> on QNX to stop any <tt class="docutils literal"><span class="pre">my_runner</span></tt> processes from a previous iteration:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">my_runner</span> <span class="o">=</span> <span class="s">&#39;my_runner&#39;</span>
-<span class="p">(</span><span class="n">num_slain</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s">&#39;/bin/slay&#39;</span><span class="p">,</span> <span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="n">my_runner</span><span class="p">])</span>
-<span class="k">print</span> <span class="s">&#39;Slayed </span><span class="si">%d</span><span class="s"> previously running </span><span class="si">%s</span><span class="s"> processes.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_slain</span><span class="p">,</span> <span class="n">my_runner</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre>my_runner = &#39;my_runner&#39;
+(num_slain, _, _) = alf.debug.run([&#39;/bin/slay&#39;, &#39;-f&#39;, my_runner])
+print &#39;Slayed %d previously running %s processes.&#39; % (num_slain, my_runner)
 </pre></div>
 </div>
 <p>Example 2 : use <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> on Unix to create a test user if necessary:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">user_name</span> <span class="o">=</span> <span class="s">&#39;fuzz_tester&#39;</span>
-<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">user_name</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">):</span>
-    <span class="p">(</span><span class="n">exit_code</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s">&#39;useradd&#39;</span><span class="p">,</span> <span class="s">&#39;-c &quot;test user&quot;&#39;</span><span class="p">,</span> <span class="n">user_name</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Can&#39;t create user </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">user_name</span>
+<div class="highlight-python"><div class="highlight"><pre>user_name = &#39;fuzz_tester&#39;
+if os.path.expanduser(&#39;~%s&#39;%user_name).startswith(&#39;~&#39;):
+    (exit_code, _, _) = alf.debug.run([&#39;useradd&#39;, &#39;-c &quot;test user&quot;&#39;, user_name])
+    if exit_code != 0:
+        print &quot;Can&#39;t create user %s.&quot; % user_name
 </pre></div>
 </div>
 <p>Example 3 : use <a class="reference internal" href="#alf.debug.run_with_windbg" title="alf.debug.run_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">run_with_windbg()</span></tt></a> to fuzz <tt class="docutils literal"><span class="pre">my_prog.exe</span></tt> from the project install directory
@@ -370,7 +368,7 @@ and return a result on failure:</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="alf.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">alf</span></tt> ALF project module</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">alf</span></tt> ALF project module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="alf.fuzz.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">alf.fuzz</span></tt> ALF Fuzzing Library</a></p>
@@ -410,7 +408,7 @@ and return a result on failure:</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Research In Motion, Ltd..
+        &copy; Copyright 2014, BlackBerry, Ltd..
     </div>
   </body>
 </html>

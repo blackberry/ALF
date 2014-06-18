@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -61,8 +59,8 @@
 <dl class="function">
 <dt id="alf.delete">
 <tt class="descclassname">alf.</tt><tt class="descname">delete</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#alf.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete files/folders in a safer manner than using <a class="reference external" href="http://docs.python.org/2.7/library/os.html#os.remove" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or
-<a class="reference external" href="http://docs.python.org/2.7/library/shutil.html#shutil.rmtree" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a> directly.</p>
+<dd><p>Delete files/folders in a safer manner than using <a class="reference external" href="http://docs.python.org/3.2/library/os.html#os.remove" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or
+<a class="reference external" href="http://docs.python.org/3.2/library/shutil.html#shutil.rmtree" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a> directly.</p>
 </dd></dl>
 
 <dl class="function">
@@ -119,7 +117,7 @@ to the ALF central server at the next check-in interval.  A
 return of None indicates a result was not found.</p>
 <p>The filenames of any temporary files or folders created during
 execution can be safely removed using <a class="reference internal" href="#alf.delete" title="alf.delete"><tt class="xref py py-func docutils literal"><span class="pre">alf.delete()</span></tt></a>.  This
-is safer than using <a class="reference external" href="http://docs.python.org/2.7/library/os.html#os.remove" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or <a class="reference external" href="http://docs.python.org/2.7/library/shutil.html#shutil.rmtree" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a>
+is safer than using <a class="reference external" href="http://docs.python.org/3.2/library/os.html#os.remove" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or <a class="reference external" href="http://docs.python.org/3.2/library/shutil.html#shutil.rmtree" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a>
 directly.  <em>mutation_fn</em> does not need to be deleted, it is
 cleaned up automatically.</p>
 </dd></dl>
@@ -137,7 +135,7 @@ should clean up any temporary files created during
 
 <dl class="class">
 <dt id="alf.FuzzResult">
-<em class="property">class </em><tt class="descclassname">alf.</tt><tt class="descname">FuzzResult</tt><big>(</big><em>classification=&lt;alf.debug._common._Classification object at 0x3138dd0&gt;</em>, <em>text=''</em>, <em>backtrace=None</em>, <em>exit_code=0</em><big>)</big><a class="headerlink" href="#alf.FuzzResult" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">alf.</tt><tt class="descname">FuzzResult</tt><big>(</big><em>classification=&lt;alf.debug._common._Classification object at 0x342c7d0&gt;</em>, <em>text=''</em>, <em>backtrace=None</em>, <em>exit_code=0</em><big>)</big><a class="headerlink" href="#alf.FuzzResult" title="Permalink to this definition">¶</a></dt>
 <dd><p>A notable result from a fuzzing iteration. This should be yielded from an
 execution of <a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">Fuzzer.do_iteration()</span></tt></a>. It will be reported to the
 ALF central server at the next check-in interval, and accessible from the ALF
@@ -324,7 +322,7 @@ which allows for consistent handling and formatting.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Research In Motion, Ltd..
+        &copy; Copyright 2014, BlackBerry, Ltd..
     </div>
   </body>
 </html>
