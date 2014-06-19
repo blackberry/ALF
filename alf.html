@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>alf ALF project module &mdash; ALF 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ALF 2.0 documentation" href="index.html" />
+    <link rel="next" title="alf.debug ALF Debugging Library" href="alf.debug.html" />
+    <link rel="prev" title="ALF Developer API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.debug.html" title="alf.debug ALF Debugging Library"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="ALF Developer API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-alf">
+<span id="alf-alf-project-module"></span><h1><a class="reference internal" href="#module-alf" title="alf: API for ALF project plugin development"><tt class="xref py py-mod docutils literal"><span class="pre">alf</span></tt></a> ALF project module<a class="headerlink" href="#module-alf" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="alf.delete">
+<tt class="descclassname">alf.</tt><tt class="descname">delete</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#alf.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete files/folders in a safer manner than using <a class="reference external" href="http://docs.python.org/3.2/library/os.html#os.remove" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or
+<a class="reference external" href="http://docs.python.org/3.2/library/shutil.html#shutil.rmtree" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a> directly.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.register">
+<tt class="descclassname">alf.</tt><tt class="descname">register</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#alf.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>This must be called by a plugin in order to register the
+implementation of <a class="reference internal" href="#alf.Fuzzer" title="alf.Fuzzer"><tt class="xref py py-class docutils literal"><span class="pre">Fuzzer</span></tt></a> with the ALF engine.  The
+registered class will be instantiated and used in the main loop.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.schedule_system_restart">
+<tt class="descclassname">alf.</tt><tt class="descname">schedule_system_restart</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.schedule_system_restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>This can be called by a plugin to request that a system restart be
+performed after the current job is complete and reported.  The
+system will not be restarted when running in local mode.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alf.Fuzzer">
+<em class="property">class </em><tt class="descclassname">alf.</tt><tt class="descname">Fuzzer</tt><big>(</big><em>template_fn</em><big>)</big><a class="headerlink" href="#alf.Fuzzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the base-class for ALF project plugins.</p>
+<p>The input template filename is given as an input when the class is
+instantiated, but is written multiple times by
+<a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a>.  Users should save either the template data
+or filename as an attribute if needed for later use.</p>
+<dl class="method">
+<dt id="alf.Fuzzer.cleanup">
+<tt class="descname">cleanup</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.Fuzzer.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called after all iterations are complete and
+periodically if the disk appears to be filling up.  It should
+clean up any temporary files written by the target to a global
+location (such as <tt class="docutils literal"><span class="pre">/tmp</span></tt> or <tt class="docutils literal"><span class="pre">%TEMP%</span></tt>), but not files which
+are necessary to run.  See also <a class="reference internal" href="#alf.Fuzzer.on_exit" title="alf.Fuzzer.on_exit"><tt class="xref py py-meth docutils literal"><span class="pre">on_exit()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.Fuzzer.do_iteration">
+<tt class="descname">do_iteration</tt><big>(</big><em>mutation_fn</em>, <em>aggression</em><big>)</big><a class="headerlink" href="#alf.Fuzzer.do_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called with an output mutation filename and a
+real aggression (see <a class="reference internal" href="api.html#aggression"><em>Aggression</em></a>) indicating the amount
+of aggression the fuzzing algorithm should use.  <em>mutation_fn</em>
+is unique for every invokation of <a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a>.</p>
+<p>It is an error for this method not to write the mutated
+template to <em>mutation_fn</em> before returning a result.  If a
+result is not found, the mutation filename may be written to
+if needed, but it is not required.</p>
+<p>If a notable result is found, it should be returned as a
+<a class="reference internal" href="#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> instance.  This will be stored and reported
+to the ALF central server at the next check-in interval.  A
+return of None indicates a result was not found.</p>
+<p>The filenames of any temporary files or folders created during
+execution can be safely removed using <a class="reference internal" href="#alf.delete" title="alf.delete"><tt class="xref py py-func docutils literal"><span class="pre">alf.delete()</span></tt></a>.  This
+is safer than using <a class="reference external" href="http://docs.python.org/3.2/library/os.html#os.remove" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">os.remove()</span></tt></a> or <a class="reference external" href="http://docs.python.org/3.2/library/shutil.html#shutil.rmtree" title="(in Python v3.2)"><tt class="xref py py-func docutils literal"><span class="pre">shutil.rmtree()</span></tt></a>
+directly.  <em>mutation_fn</em> does not need to be deleted, it is
+cleaned up automatically.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="alf.Fuzzer.on_exit">
+<tt class="descname">on_exit</tt><big>(</big><big>)</big><a class="headerlink" href="#alf.Fuzzer.on_exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called after all iterations are complete.  It
+should clean up any temporary files created during
+<a class="reference internal" href="#alf.Fuzzer" title="alf.Fuzzer"><tt class="xref py py-class docutils literal"><span class="pre">Fuzzer</span></tt></a> which are necessary to run
+<a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a>.  See also <a class="reference internal" href="#alf.Fuzzer.cleanup" title="alf.Fuzzer.cleanup"><tt class="xref py py-meth docutils literal"><span class="pre">cleanup()</span></tt></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.FuzzResult">
+<em class="property">class </em><tt class="descclassname">alf.</tt><tt class="descname">FuzzResult</tt><big>(</big><em>classification=&lt;alf.debug._common._Classification object at 0x342c7d0&gt;</em>, <em>text=''</em>, <em>backtrace=None</em>, <em>exit_code=0</em><big>)</big><a class="headerlink" href="#alf.FuzzResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>A notable result from a fuzzing iteration. This should be yielded from an
+execution of <a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">Fuzzer.do_iteration()</span></tt></a>. It will be reported to the
+ALF central server at the next check-in interval, and accessible from the ALF
+website thereafter. The result will be associated with the mutation filename
+in the <a class="reference internal" href="#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">Fuzzer.do_iteration()</span></tt></a> execution that yields this object.</p>
+<dl class="attribute">
+<dt id="alf.FuzzResult.MAJOR_HASH_DEPTH">
+<tt class="descname">MAJOR_HASH_DEPTH</tt><em class="property"> = 4</em><a class="headerlink" href="#alf.FuzzResult.MAJOR_HASH_DEPTH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum stack depth for calculating the major hash.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.MAX_TEXT">
+<tt class="descname">MAX_TEXT</tt><em class="property"> = 1048576</em><a class="headerlink" href="#alf.FuzzResult.MAX_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum string length allowed for the <a class="reference internal" href="#alf.FuzzResult.text" title="alf.FuzzResult.text"><tt class="xref py py-attr docutils literal"><span class="pre">text</span></tt></a> attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.backtrace">
+<tt class="descname">backtrace</tt><a class="headerlink" href="#alf.FuzzResult.backtrace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of <a class="reference internal" href="#alf.LSO" title="alf.LSO"><tt class="xref py py-class docutils literal"><span class="pre">LSO</span></tt></a> objects representing a backtrace at the time of the crash.
+These are ordered by descending time (ie. most recent is first in the list).
+It is an error for this to be empty if <a class="reference internal" href="#alf.FuzzResult.classification" title="alf.FuzzResult.classification"><tt class="xref py py-attr docutils literal"><span class="pre">classification</span></tt></a> is
+anything other than <tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.classification">
+<tt class="descname">classification</tt><a class="headerlink" href="#alf.FuzzResult.classification" title="Permalink to this definition">¶</a></dt>
+<dd><p>A classification constant as defined in <a class="reference internal" href="alf.debug.html#module-alf.debug" title="alf.debug: Library of target execution and fault monitoring helper functions."><tt class="xref py py-mod docutils literal"><span class="pre">alf.debug</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.exit_code">
+<tt class="descname">exit_code</tt><a class="headerlink" href="#alf.FuzzResult.exit_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the exit code from the target process.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.major">
+<tt class="descname">major</tt><a class="headerlink" href="#alf.FuzzResult.major" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the major hash of this result based on the backtrace for grouping.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.minor">
+<tt class="descname">minor</tt><a class="headerlink" href="#alf.FuzzResult.minor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the minor hash of this result based on the backtrace for grouping.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.FuzzResult.text">
+<tt class="descname">text</tt><a class="headerlink" href="#alf.FuzzResult.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>A freeform string to describe the result. It is suggested this include
+the standard output and error streams from the target. Cannot exceed
+<a class="reference internal" href="#alf.FuzzResult.MAX_TEXT" title="alf.FuzzResult.MAX_TEXT"><tt class="xref py py-attr docutils literal"><span class="pre">MAX_TEXT</span></tt></a> in length.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alf.LSO">
+<em class="property">class </em><tt class="descclassname">alf.</tt><tt class="descname">LSO</tt><big>(</big><em>lso</em><big>)</big><a class="headerlink" href="#alf.LSO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of a resolved address in an executable image.
+<em>lso</em> is a tuple containing the library name, symbol name, and offset.
+The interpretation of offset is given in the table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="21%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library</th>
+<th class="head">Symbol</th>
+<th class="head">Offset</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>(any value)</td>
+<td>not None</td>
+<td>relative to symbol</td>
+</tr>
+<tr class="row-odd"><td>not None</td>
+<td>None</td>
+<td>relative to library</td>
+</tr>
+<tr class="row-even"><td>None</td>
+<td>None</td>
+<td>absolute address</td>
+</tr>
+</tbody>
+</table>
+<p>This is the primary way that symbols are represented internally by ALF,
+which allows for consistent handling and formatting.</p>
+<p>Call stacks and backtraces are represented as lists of LSOs, organized head-first.
+(Note that <tt class="xref py py-meth docutils literal"><span class="pre">list.pop()</span></tt> assumes tail-first by default. Use
+<tt class="docutils literal"><span class="pre">pop(0)</span></tt>.)</p>
+<dl class="method">
+<dt id="alf.LSO.get_str">
+<tt class="descname">get_str</tt><big>(</big><em>include_offset=True</em><big>)</big><a class="headerlink" href="#alf.LSO.get_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string representation of the address in the form
+&#8216;library!symbol+offset&#8217; if <em>include_offset</em> is True, otherwise in the form
+&#8216;library!symbol&#8217;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.LSO.lib">
+<tt class="descname">lib</tt><em class="property"> = None</em><a class="headerlink" href="#alf.LSO.lib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Library</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.LSO.off">
+<tt class="descname">off</tt><em class="property"> = None</em><a class="headerlink" href="#alf.LSO.off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offset</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alf.LSO.sym">
+<tt class="descname">sym</tt><em class="property"> = None</em><a class="headerlink" href="#alf.LSO.sym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbol</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">alf</span></tt> ALF project module</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">ALF Developer API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="alf.debug.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">alf.debug</span></tt> ALF Debugging Library</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.debug.html" title="alf.debug ALF Debugging Library"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="ALF Developer API"
+             >previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, BlackBerry, Ltd..
+    </div>
+  </body>
+</html>

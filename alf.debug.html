@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>alf.debug ALF Debugging Library &mdash; ALF 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ALF 2.0 documentation" href="index.html" />
+    <link rel="next" title="alf.fuzz ALF Fuzzing Library" href="alf.fuzz.html" />
+    <link rel="prev" title="alf ALF project module" href="alf.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.fuzz.html" title="alf.fuzz ALF Fuzzing Library"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="alf.html" title="alf ALF project module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-alf.debug">
+<span id="alf-debug-alf-debugging-library"></span><h1><a class="reference internal" href="#module-alf.debug" title="alf.debug: Library of target execution and fault monitoring helper functions."><tt class="xref py py-mod docutils literal"><span class="pre">alf.debug</span></tt></a> ALF Debugging Library<a class="headerlink" href="#module-alf.debug" title="Permalink to this headline">¶</a></h1>
+<p>This module provides a set of target execution and debugging helper functions, useful
+for fault detection and analysis in fuzzer development.</p>
+<div class="section" id="callbacks">
+<h2>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h2>
+<p>Most of the <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> family of functions defined in this module take an optional callback
+and callback arguments. If a callback is given, it is called immediately after the target is launched.
+These are typically used to interact with the target in some
+way which can&#8217;t be done using command line parameters or file I/O. They are expected to report
+back a status using one of the <a class="reference internal" href="#cb-constants"><em>Constants</em></a> defined in this module. The documentation for <a class="reference internal" href="#alf.debug.TargetPid" title="alf.debug.TargetPid"><tt class="xref py py-class docutils literal"><span class="pre">alf.debug.TargetPid</span></tt></a> describes how a callback can get a handle
+to the target using the process identifier (PID).</p>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="alf.debug.attach_with_windbg">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">attach_with_windbg</tt><big>(</big><em>target_pid</em>, <em>symbols=None</em>, <em>callback=None</em>, <em>callback_args=None</em>, <em>timeout=60</em>, <em>memory_limit=None</em><big>)</big><a class="headerlink" href="#alf.debug.attach_with_windbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is similar to <a class="reference internal" href="#alf.debug.run_with_windbg" title="alf.debug.run_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">run_with_windbg()</span></tt></a>, except the
+target is expected to already be executing.  Symbols may be
+specified manually, otherwise they are expected to be findable by
+the Windows Debugging API (usually in a <tt class="docutils literal"><span class="pre">.pdb</span></tt> file having the
+same basename as the target).</p>
+<p>A callback is expected to be provided to interact with the target
+while the debugger is attached.  Once the callback returns, the
+debugger will be detached from the target.  This usually results
+in a <a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> with classification
+<a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a> due to the breakpoint used to attach,
+unless the target crashes on its own.</p>
+<p><a class="reference internal" href="#alf.debug.attach_with_windbg" title="alf.debug.attach_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">attach_with_windbg()</span></tt></a> returns a <a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a>
+instance.  If no crash was detected, the
+<a class="reference internal" href="alf.html#alf.FuzzResult.classification" title="alf.FuzzResult.classification"><tt class="xref py py-attr docutils literal"><span class="pre">classification</span></tt></a> member of the
+<a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> will be <a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a> (as
+described in previous paragraph).</p>
+<p>Classifications are derived from the <a class="reference external" href="http://msecdbg.codeplex.com/">Microsoft !exploitable</a> extension.</p>
+<p>Classifications: <a class="reference internal" href="#alf.debug.alf.debug.EXCESS_MEMORY_USAGE" title="alf.debug.alf.debug.EXCESS_MEMORY_USAGE"><tt class="xref py py-data docutils literal"><span class="pre">EXCESS_MEMORY_USAGE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.EXPLOITABLE" title="alf.debug.alf.debug.EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.PROBABLY_EXPLOITABLE" title="alf.debug.alf.debug.PROBABLY_EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">PROBABLY_EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE" title="alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">PROBABLY_NOT_EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.TIMEOUT" title="alf.debug.alf.debug.TIMEOUT"><tt class="xref py py-data docutils literal"><span class="pre">TIMEOUT</span></tt></a>, <a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a>.</p>
+<p>Availability: Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.debug.reduce_timeout_with_windbg">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">reduce_timeout_with_windbg</tt><big>(</big><em>target_cmd</em>, <em>timeout=60</em>, <em>init_wait=None</em>, <em>symbols=None</em>, <em>env=None</em>, <em>callback=None</em>, <em>callback_args=None</em><big>)</big><a class="headerlink" href="#alf.debug.reduce_timeout_with_windbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses a super-sekrit algorithm to minimize a command which results
+in TIMEOUT classifications using nothing but WinDBG and raw nerve.
+It returns a <tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt>.</p>
+<p>Note: A timeout limit of less than 30 seconds may not produce
+accurate results.</p>
+<p>TODO: Add support for callback</p>
+<p>Availability: Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.debug.run">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">run</tt><big>(</big><em>target_cmd</em>, <em>stdin=None</em>, <em>callback=None</em>, <em>callback_args=None</em>, <em>env=None</em>, <em>timeout=60</em>, <em>memory_limit=None</em>, <em>idle_limit=None</em><big>)</big><a class="headerlink" href="#alf.debug.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function runs the given target command in a sub-process, and
+returns the results. The <em>target_cmd</em> parameter should be a list
+of command line arguments, with the first argument being the target
+executable. The expected duration of the run is determined automatically.</p>
+<p><a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> returns a <tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt>.</p>
+<p>Availability: Unix, Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.debug.run_with_gdb">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">run_with_gdb</tt><big>(</big><em>target_cmd</em>, <em>symbols=None</em>, <em>solib_search=None</em>, <em>env=None</em>, <em>callback=None</em>, <em>callback_args=None</em>, <em>timeout=60</em>, <em>memory_limit=None</em>, <em>idle_limit=None</em><big>)</big><a class="headerlink" href="#alf.debug.run_with_gdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is similar to the <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> function above,
+except the target is executed under control of the GNU Debugger.
+Symbols may be specified manually, otherwise they are expected
+to be findable by GDB (usually included in the target itself).</p>
+<p><a class="reference internal" href="#alf.debug.run_with_gdb" title="alf.debug.run_with_gdb"><tt class="xref py py-func docutils literal"><span class="pre">run_with_gdb()</span></tt></a> returns a <a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> instance.
+If no crash was detected, the <a class="reference internal" href="alf.html#alf.FuzzResult.classification" title="alf.FuzzResult.classification"><tt class="xref py py-attr docutils literal"><span class="pre">classification</span></tt></a>
+member of the <a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> will be
+<a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>.</p>
+<p>Classifications: <a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.TIMEOUT" title="alf.debug.alf.debug.TIMEOUT"><tt class="xref py py-data docutils literal"><span class="pre">TIMEOUT</span></tt></a>, <a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a>.</p>
+<p>Availability: Unix, Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.debug.run_with_windbg">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">run_with_windbg</tt><big>(</big><em>target_cmd</em>, <em>symbols=None</em>, <em>env=None</em>, <em>callback=None</em>, <em>callback_args=None</em>, <em>pageheap=True</em>, <em>timeout=60</em>, <em>memory_limit=None</em>, <em>idle_limit=None</em><big>)</big><a class="headerlink" href="#alf.debug.run_with_windbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is similar to the <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> function above,
+except the target is executed under control of the Windows
+Debugger (<tt class="docutils literal"><span class="pre">WinDBG</span></tt>).  Symbols may be specified manually,
+otherwise they are expected to be findable by the Windows
+Debugging API (usually in a <tt class="docutils literal"><span class="pre">.pdb</span></tt> file having the same basename
+as the target).</p>
+<p><a class="reference internal" href="#alf.debug.run_with_windbg" title="alf.debug.run_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">run_with_windbg()</span></tt></a> returns a <a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a>
+instance.  If no crash was detected, the
+<a class="reference internal" href="alf.html#alf.FuzzResult.classification" title="alf.FuzzResult.classification"><tt class="xref py py-attr docutils literal"><span class="pre">classification</span></tt></a> member of the
+<a class="reference internal" href="alf.html#alf.FuzzResult" title="alf.FuzzResult"><tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt></a> will be
+<a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>.</p>
+<p>Classifications are derived from the <a class="reference external" href="http://msecdbg.codeplex.com/">Microsoft !exploitable</a> extension.</p>
+<p>Classifications: <a class="reference internal" href="#alf.debug.alf.debug.EXCESS_MEMORY_USAGE" title="alf.debug.alf.debug.EXCESS_MEMORY_USAGE"><tt class="xref py py-data docutils literal"><span class="pre">EXCESS_MEMORY_USAGE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.EXPLOITABLE" title="alf.debug.alf.debug.EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.PROBABLY_EXPLOITABLE" title="alf.debug.alf.debug.PROBABLY_EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">PROBABLY_EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE" title="alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE"><tt class="xref py py-data docutils literal"><span class="pre">PROBABLY_NOT_EXPLOITABLE</span></tt></a>,
+<a class="reference internal" href="#alf.debug.alf.debug.TIMEOUT" title="alf.debug.alf.debug.TIMEOUT"><tt class="xref py py-data docutils literal"><span class="pre">TIMEOUT</span></tt></a>, <a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a>.</p>
+<p>Availability: Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="alf.debug.trace_memory_usage_with_windbg">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">trace_memory_usage_with_windbg</tt><big>(</big><em>target_cmd</em>, <em>init_sym</em>, <em>memory_limit</em>, <em>timeout=60</em>, <em>symbols=None</em>, <em>env=None</em>, <em>callback=None</em>, <em>callback_args=None</em><big>)</big><a class="headerlink" href="#alf.debug.trace_memory_usage_with_windbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>This can be used to help pin point the call that causes the target
+application to exceed the defined memory limit.  It returns a
+<tt class="xref py py-class docutils literal"><span class="pre">FuzzResult</span></tt>.</p>
+<p>init_sym is the symbol used for the initial breakpoint used to
+configure the run.  For example: &lt;target&gt;!main</p>
+<p>memory_limit is the memory limit in bytes that the application
+should not exceed.</p>
+<p>TODO: Add support for callback</p>
+<p>Availability: Windows.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="alf.debug.TargetPid">
+<em class="property">class </em><tt class="descclassname">alf.debug.</tt><tt class="descname">TargetPid</tt><a class="headerlink" href="#alf.debug.TargetPid" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is a placeholder for the PID of the target process needed by
+a callback function in <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> or one of the similar functions
+provided in this module. If an instance of this class is given in the
+list of <em>callback_args</em>, it will be replaced with the pid (as an
+integer) before being passed to the callback.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<span id="cb-constants"></span><h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="alf.debug.alf.debug.CB_PASS">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">CB_PASS</tt><a class="headerlink" href="#alf.debug.alf.debug.CB_PASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback returned successfully. No effect is had on the result of the calling function.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.CB_FAIL">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">CB_FAIL</tt><a class="headerlink" href="#alf.debug.alf.debug.CB_FAIL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback detected that target crashed/failed. The calling function will report a failure
+in the target, even if one is not detected otherwise. This means that <a class="reference internal" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="alf.debug.alf.debug.NOT_AN_EXCEPTION"><tt class="xref py py-data docutils literal"><span class="pre">NOT_AN_EXCEPTION</span></tt></a>
+results will be elevated to <a class="reference internal" href="#alf.debug.alf.debug.UNKNOWN" title="alf.debug.alf.debug.UNKNOWN"><tt class="xref py py-data docutils literal"><span class="pre">UNKNOWN</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.CB_HANG">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">CB_HANG</tt><a class="headerlink" href="#alf.debug.alf.debug.CB_HANG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback detected that target is hung/unresponsive. The calling function will report
+a result with classification <a class="reference internal" href="#alf.debug.alf.debug.TIMEOUT" title="alf.debug.alf.debug.TIMEOUT"><tt class="xref py py-data docutils literal"><span class="pre">TIMEOUT</span></tt></a>, even if the target would have generated
+another classification otherwise.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.CB_ERROR">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">CB_ERROR</tt><a class="headerlink" href="#alf.debug.alf.debug.CB_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback (not target) failed. An error will be reported to the ALF server for review by
+the project owner and ALF admins.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.EXCESS_MEMORY_USAGE">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">EXCESS_MEMORY_USAGE</tt><a class="headerlink" href="#alf.debug.alf.debug.EXCESS_MEMORY_USAGE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Application exceeded the defined memory limit</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.EXPLOITABLE">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">EXPLOITABLE</tt><a class="headerlink" href="#alf.debug.alf.debug.EXPLOITABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defect can be used to achieve arbitrary code execution</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.NOT_AN_EXCEPTION">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">NOT_AN_EXCEPTION</tt><a class="headerlink" href="#alf.debug.alf.debug.NOT_AN_EXCEPTION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Application did exit but encountered issues</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.PROBABLY_EXPLOITABLE">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">PROBABLY_EXPLOITABLE</tt><a class="headerlink" href="#alf.debug.alf.debug.PROBABLY_EXPLOITABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defect can likely be used to achieve arbitrary code execution</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">PROBABLY_NOT_EXPLOITABLE</tt><a class="headerlink" href="#alf.debug.alf.debug.PROBABLY_NOT_EXPLOITABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unexpected application termination usually due to a read access violation</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.TIMEOUT">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">TIMEOUT</tt><a class="headerlink" href="#alf.debug.alf.debug.TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Application did not exit within given time. Usually stuck in a loop</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.UNKNOWN">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">UNKNOWN</tt><a class="headerlink" href="#alf.debug.alf.debug.UNKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unexpected application termination exploitability can&#8217;t be automatically determined</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="alf.debug.alf.debug.DEFAULT_TIMEOUT">
+<tt class="descclassname">alf.debug.</tt><tt class="descname">DEFAULT_TIMEOUT</tt><a class="headerlink" href="#alf.debug.alf.debug.DEFAULT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default time limit for <cite>~alf.debug.run()</cite> and similar functions which take a <tt class="docutils literal"><span class="pre">timeout</span></tt> argument. (60s)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>These examples are ways in which, during an iteration run by
+<a class="reference internal" href="alf.html#alf.Fuzzer.do_iteration" title="alf.Fuzzer.do_iteration"><tt class="xref py py-meth docutils literal"><span class="pre">do_iteration()</span></tt></a>, control might be
+exercised of the environment and the subject being fuzzed.  The details vary because of the
+many ways a fuzz subject might demand to be run or used: as a single program, as a continuaously
+running process, or, in the biggest case, as a collection of cooperating processes
+which may depend on an external resource.   The ALF framework provides facilities to
+run and monitor parts of such a subject with and without a debugger.  A plugin designer
+should provide debuggable builds of executables (if required), and must take care to
+depend only on extraneous resources which are or can be made available for automated testing.</p>
+<p>The example programs <tt class="docutils literal"><span class="pre">my_something</span></tt> below are purely imaginary.  Resemblance to real
+programs living or dead is a coincidence.</p>
+<p>Example 1 : use <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> on QNX to stop any <tt class="docutils literal"><span class="pre">my_runner</span></tt> processes from a previous iteration:</p>
+<div class="highlight-python"><div class="highlight"><pre>my_runner = &#39;my_runner&#39;
+(num_slain, _, _) = alf.debug.run([&#39;/bin/slay&#39;, &#39;-f&#39;, my_runner])
+print &#39;Slayed %d previously running %s processes.&#39; % (num_slain, my_runner)
+</pre></div>
+</div>
+<p>Example 2 : use <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> on Unix to create a test user if necessary:</p>
+<div class="highlight-python"><div class="highlight"><pre>user_name = &#39;fuzz_tester&#39;
+if os.path.expanduser(&#39;~%s&#39;%user_name).startswith(&#39;~&#39;):
+    (exit_code, _, _) = alf.debug.run([&#39;useradd&#39;, &#39;-c &quot;test user&quot;&#39;, user_name])
+    if exit_code != 0:
+        print &quot;Can&#39;t create user %s.&quot; % user_name
+</pre></div>
+</div>
+<p>Example 3 : use <a class="reference internal" href="#alf.debug.run_with_windbg" title="alf.debug.run_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">run_with_windbg()</span></tt></a> to fuzz <tt class="docutils literal"><span class="pre">my_prog.exe</span></tt> from the project install directory
+with arguments including a mutated file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">TOOL</span> <span class="o">=</span> <span class="s">&#39;my_prog.exe&#39;</span>
+<span class="n">command</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="n">TOOL</span><span class="p">)</span>
+<span class="p">(</span><span class="n">exit_code</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">run_with_windbg</span><span class="p">([</span><span class="n">command</span><span class="p">,</span> <span class="s">&#39;--quiet&#39;</span><span class="p">,</span> <span class="s">&#39;--input=</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">mutation_fn</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">classification</span> <span class="o">!=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">NOT_AN_EXCEPTION</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<p>Example 4 : use <a class="reference internal" href="#alf.debug.run_with_gdb" title="alf.debug.run_with_gdb"><tt class="xref py py-func docutils literal"><span class="pre">run_with_gdb()</span></tt></a> to run a web service program <tt class="docutils literal"><span class="pre">my_server</span></tt> under the debugger
+and use callback parameter to interact with it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">urllib</span>
+<span class="n">my_server</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="s">&#39;my_server&#39;</span><span class="p">)</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://localhost:</span><span class="si">%d</span><span class="s">/do?something&#39;</span> <span class="o">%</span> <span class="n">port</span>
+<span class="n">from_server</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="p">(</span><span class="n">exit_code</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">run_with_gdb</span><span class="p">(</span>
+    <span class="n">target_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">my_server</span><span class="p">,</span> <span class="s">&#39;--bindaddr=localhost&#39;</span><span class="p">,</span> <span class="s">&#39;--port=</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="n">port</span><span class="p">],</span>
+    <span class="n">callback</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span><span class="n">from_server</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="c"># check got something</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">from_server</span><span class="p">:</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">classification</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">UNKNOWN</span>
+
+<span class="c"># return exceptional result</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">classification</span> <span class="o">!=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">NOT_AN_EXCEPTION</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<p>Example 4b : on Windows the above example would work with <tt class="docutils literal"><span class="pre">gdb</span></tt>, or with <tt class="docutils literal"><span class="pre">cdb</span></tt>
+by calling  <a class="reference internal" href="#alf.debug.run_with_windbg" title="alf.debug.run_with_windbg"><tt class="xref py py-func docutils literal"><span class="pre">run_with_windbg()</span></tt></a> instead of  <a class="reference internal" href="#alf.debug.run_with_gdb" title="alf.debug.run_with_gdb"><tt class="xref py py-func docutils literal"><span class="pre">run_with_gdb()</span></tt></a>.</p>
+<p>Example 5 : using <a class="reference internal" href="#alf.debug.run" title="alf.debug.run"><tt class="xref py py-func docutils literal"><span class="pre">run()</span></tt></a> launch a test case <tt class="docutils literal"><span class="pre">my_prog.exe</span></tt> without the debugger
+and return a result on failure:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">TOOL</span> <span class="o">=</span> <span class="s">&#39;my_prog.exe&#39;</span>
+<span class="n">command</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="n">TOOL</span><span class="p">)</span>
+<span class="n">pids</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="p">(</span><span class="n">exit_code</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">was_timeout</span><span class="p">)</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">target_cmd</span><span class="o">=</span><span class="p">[</span><span class="n">command</span><span class="p">,</span> <span class="n">mutation_fn</span><span class="p">],</span>
+    <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span><span class="n">pids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">pid</span><span class="p">),</span>
+    <span class="n">callback_args</span><span class="o">=</span><span class="p">[</span><span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">TargetPid</span><span class="p">()]</span>
+<span class="p">)</span>
+<span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">was_timeout</span><span class="p">:</span>
+    <span class="p">(</span><span class="n">pid</span><span class="p">,)</span> <span class="o">=</span> <span class="n">pids</span>
+
+    <span class="c"># extract a stack trace from a log file?</span>
+    <span class="n">stack_trace</span> <span class="o">=</span> <span class="n">_my_stack_trace</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">alf</span><span class="o">.</span><span class="n">FuzzResult</span><span class="p">(</span><span class="n">alf</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span> <span class="s">&#39;[</span><span class="si">%s</span><span class="s">]: exit(</span><span class="si">%s</span><span class="s">).&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">),</span> <span class="n">stack_trace</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">alf.debug</span></tt> ALF Debugging Library</a><ul>
+<li><a class="reference internal" href="#callbacks">Callbacks</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="alf.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">alf</span></tt> ALF project module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="alf.fuzz.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">alf.fuzz</span></tt> ALF Fuzzing Library</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="alf.fuzz.html" title="alf.fuzz ALF Fuzzing Library"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="alf.html" title="alf ALF project module"
+             >previous</a> |</li>
+        <li><a href="index.html">ALF 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, BlackBerry, Ltd..
+    </div>
+  </body>
+</html>
